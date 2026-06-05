@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segunda Ley de Newton</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .calculadora {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #resultado {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="calculadora">
+        <h2>Calculadora de Aceleración</h2>
+        <p>Fórmula: <strong>a = F / m</strong></p>
+        
+        <label for="fuerza">Fuerza (Newtons):</label>
+        <input type="number" id="fuerza" placeholder="Ej: 50" required>
+        
+        <label for="masa">Masa (Kilogramos):</label>
+        <input type="number" id="masa" placeholder="Ej: 10" required>
+        
+        <button onclick="calcular()">Calcular</button>
+        
+        <div id="resultado">Aceleración: -- m/s²</div>
+    </div>
+
+    <script>
+        function calcular() {
+            // 1. Obtener los valores ingresados por el usuario
+            let fuerza = parseFloat(document.getElementById('fuerza').value);
+            let masa = parseFloat(document.getElementById('masa').value);
+            let resultadoDiv = document.getElementById('resultado');
+
+            // 2. Validar que los datos sean correctos
+            if (isNaN(fuerza) || isNaN(masa)) {
+                resultadoDiv.innerText = "Por favor, ingresa ambos valores.";
+                resultadoDiv.style.color = "red";
+                return;
+            }
+            if (masa <= 0) {
+                resultadoDiv.innerText = "La masa debe ser mayor a 0.";
+                resultadoDiv.style.color = "red";
+                return;
+            }
+
+            // 3. Aplicar la fórmula a = F / m
+            let aceleracion = fuerza / masa;
+
+            // 4. Mostrar el resultado en pantalla
+            resultadoDiv.innerText = "Aceleración: " + aceleracion.toFixed(2) + " m/s²";
+            resultadoDiv.style.color = "#333";
+        }
+    </script>
+
+</body>
+</html>
