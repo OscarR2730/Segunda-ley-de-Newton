@@ -3,432 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard: Segunda Ley de Newton</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>Simulación Educativa: Ley de Newton</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #12151c;
-            --panel-bg: linear-gradient(145deg, #2b303b, #1f232b);
-            --metal-light: #424959;
-            --metal-dark: #15181e;
-            --neon-blue: #00f3ff;
-            --neon-green: #39ff14;
-            --neon-red: #ff003c;
-            --text-main: #e2e8f0;
+            --color-cielo: #bae6fd;
+            --color-pasto: #4ade80;
+            --color-panel: rgba(255, 255, 255, 0.85);
+            --color-texto: #334155;
+            --color-acento: #0ea5e9;
+            --color-fuerza: #f97316;
+            --color-masa: #8b5cf6;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at 50% 50%, #202635 0%, #0a0c10 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(to bottom, var(--color-cielo) 60%, var(--color-pasto) 40%);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            color: var(--text-main);
+            color: var(--color-texto);
+            overflow: hidden;
         }
 
-        .dashboard {
-            background: var(--panel-bg);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 
-                0 20px 50px rgba(0,0,0,0.8),
-                inset 2px 2px 5px rgba(255,255,255,0.1),
-                inset -2px -2px 5px rgba(0,0,0,0.5);
-            border: 1px solid #3a4150;
-            width: 850px;
-            max-width: 95%;
-            position: relative;
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 30px;
-        }
-
-        /* Tornillos */
-        .tornillo {
+        /* Nubes decorativas de fondo */
+        .nube {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background: linear-gradient(135deg, #7a8294, #2d3340);
-            border-radius: 50%;
-            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3), 1px 1px 3px rgba(0,0,0,0.8);
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: moverNube 30s linear infinite;
         }
-        .tornillo::after {
+        .nube::before, .nube::after {
             content: '';
             position: absolute;
-            top: 50%; left: 50%;
-            width: 60%; height: 2px;
-            background: #1a1d24;
-            transform: translate(-50%, -50%) rotate(45deg);
+            background: white;
+            border-radius: 50%;
         }
-        .tl { top: 15px; left: 15px; }
-        .tr { top: 15px; right: 15px; transform: rotate(30deg); }
-        .bl { bottom: 15px; left: 15px; transform: rotate(-20deg); }
-        .br { bottom: 15px; right: 15px; transform: rotate(70deg); }
+        .nube1 { width: 100px; height: 30px; top: 15%; left: -100px; }
+        .nube1::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+        .nube1::after { width: 40px; height: 40px; top: -15px; left: 55px; }
+        
+        .nube2 { width: 120px; height: 35px; top: 30%; left: -150px; animation-duration: 45s; animation-delay: 10s;}
+        .nube2::before { width: 60px; height: 60px; top: -30px; left: 20px; }
+        .nube2::after { width: 50px; height: 50px; top: -20px; left: 65px; }
 
-        /* Controles */
-        .controles {
+        @keyframes moverNube {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(120vw); }
+        }
+
+        /* Contenedor Principal estilo App */
+        .app-contenedor {
+            width: 900px;
+            max-width: 95%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .panel-controles {
+            background: var(--color-panel);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            border: 2px solid white;
+        }
+
+        .controles-izq {
+            flex: 2;
             display: flex;
             flex-direction: column;
             gap: 20px;
+        }
+
+        .resultado-der {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            border: 2px dashed #cbd5e1;
         }
 
         h1 {
             margin: 0 0 10px 0;
-            font-size: 1.5rem;
-            text-align: center;
-            color: var(--text-main);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            color: var(--color-acento);
+            font-size: 1.8rem;
+            font-weight: 900;
         }
 
-        .input-group {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: inset 0 4px 6px rgba(0,0,0,0.3);
+        .control-grupo {
+            display: flex;
+            flex-direction: column;
         }
 
-        label {
-            display: block;
-            font-size: 0.85rem;
-            color: #94a3b8;
+        .etiqueta-valor {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
             margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
-        input {
+        /* Estilo de los Sliders */
+        input[type=range] {
+            -webkit-appearance: none;
             width: 100%;
-            background: #111318;
-            border: 1px solid #333a47;
-            color: var(--neon-blue);
-            padding: 12px;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 1.1rem;
-            font-family: 'Share Tech Mono', monospace;
-            transition: all 0.3s;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 3px solid;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #e2e8f0;
+            border-radius: 5px;
         }
 
-        input:focus {
-            outline: none;
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
-        }
+        /* Colores específicos de sliders */
+        #fuerza::-webkit-slider-thumb { border-color: var(--color-fuerza); }
+        #fuerza::-webkit-slider-runnable-track { background: linear-gradient(90deg, #fdba74, #ea580c); }
+        
+        #masa::-webkit-slider-thumb { border-color: var(--color-masa); }
+        #masa::-webkit-slider-runnable-track { background: linear-gradient(90deg, #d8b4fe, #7e22ce); }
 
         button {
-            background: linear-gradient(to bottom, #1e3a8a, #1e40af);
+            background-color: var(--color-acento);
             color: white;
-            border: 2px solid #3b82f6;
-            padding: 15px;
+            border: none;
+            padding: 12px 25px;
             font-size: 1.1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 8px;
+            font-weight: 700;
+            border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.2);
-            transition: all 0.2s;
-            letter-spacing: 1px;
-        }
-
-        button:hover {
-            background: linear-gradient(to bottom, #2563eb, #1d4ed8);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6), inset 0 2px 5px rgba(255,255,255,0.3);
+            box-shadow: 0 4px 0 #0284c7;
+            transition: all 0.1s;
+            margin-top: 10px;
+            font-family: 'Nunito', sans-serif;
         }
 
         button:active {
-            transform: scale(0.98);
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #0284c7;
         }
 
-        /* Visualizador */
-        .visualizador {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .pantalla-resultado {
-            background: #05080c;
-            border: 3px solid #1f2937;
-            border-radius: 10px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-            position: relative;
-        }
-
-        .texto-digital {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 2.5rem;
-            color: var(--neon-green);
-            text-shadow: 0 0 10px var(--neon-green);
+        .resultado-der h3 {
             margin: 0;
-        }
-        
-        .etiqueta-digital {
-            font-family: 'Share Tech Mono', monospace;
-            color: #4b5563;
-            font-size: 1.2rem;
+            color: #64748b;
+            font-size: 1rem;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
+        .valor-aceleracion {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-acento);
+            margin: 10px 0;
+        }
+
+        /* Entorno Físico (Simulación) */
         .escenario {
-            background: rgba(0,0,0,0.3);
-            border: 2px solid #333a47;
-            border-radius: 10px;
-            height: 180px;
+            height: 200px;
             position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 10px 20px rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-        }
-
-        .riel {
-            position: absolute;
-            bottom: 30px;
-            left: 0;
-            right: 0;
-            height: 12px;
-            background: linear-gradient(to bottom, #cbd5e1 0%, #64748b 50%, #334155 100%);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+            margin-top: 40px;
+            border-bottom: 8px solid #166534; /* Tierra debajo del pasto */
         }
 
         .bloque-wrapper {
             position: absolute;
-            bottom: 42px;
-            left: 20px;
+            bottom: 0;
+            left: 50px;
             display: flex;
             align-items: center;
-            z-index: 10;
         }
 
-        .flecha-fuerza {
-            height: 10px;
-            width: 0px; 
-            background: linear-gradient(to right, #fbbf24, #ef4444);
+        .vector-fuerza {
+            height: 15px;
+            width: 0px;
+            background-color: var(--color-fuerza);
             position: relative;
-            transition: width 0.5s ease;
+            transition: width 0.3s ease;
             margin-right: 5px;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            border-radius: 3px;
         }
         
-        .flecha-fuerza::after {
+        .vector-fuerza::after {
             content: '';
             position: absolute;
-            right: -10px;
-            top: -5px;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-left: 10px solid #ef4444;
+            right: -12px;
+            top: -7px;
+            border-top: 14px solid transparent;
+            border-bottom: 14px solid transparent;
+            border-left: 14px solid var(--color-fuerza);
         }
 
+        /* El bloque ahora parece una caja de madera */
         .bloque {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #94a3b8 0%, #475569 100%);
-            border: 2px solid #cbd5e1;
-            border-radius: 8px;
-            box-shadow: 
-                inset 2px 2px 5px rgba(255,255,255,0.4),
-                inset -5px -5px 10px rgba(0,0,0,0.5),
-                5px 5px 15px rgba(0,0,0,0.6);
+            width: 70px;
+            height: 70px;
+            background-color: #d97706;
+            background-image: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                rgba(0,0,0,0.1) 10px,
+                rgba(0,0,0,0.1) 20px
+            );
+            border: 3px solid #92400e;
+            border-radius: 5px;
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.15);
+            font-weight: 900;
             color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        /* Velocímetro Mejorado */
-        .velocimetro-container {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            width: 100px;
-            height: 50px;
-            background: radial-gradient(circle at bottom, #1f2937 0%, #0f172a 100%);
-            border-top-left-radius: 50px;
-            border-top-right-radius: 50px;
-            border: 2px solid #475569;
-            border-bottom: 2px solid #1e293b;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-        }
-
-        /* Marcas del velocímetro */
-        .velocimetro-container::before {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 40px;
-            border-top-left-radius: 40px;
-            border-top-right-radius: 40px;
-            border: 2px dashed #64748b;
-            border-bottom: none;
-            bottom: 0;
-            opacity: 0.5;
-        }
-
-        .aguja {
-            width: 3px;
-            height: 45px;
-            background: var(--neon-red);
-            transform-origin: bottom center;
-            transform: rotate(-90deg); /* Inicio a la izquierda (velocidad 0) */
-            box-shadow: 0 0 8px var(--neon-red);
-            border-radius: 3px;
-            z-index: 2;
-            margin-bottom: -2px; /* Ajuste para el punto de rotación */
-        }
-
-        .punto-central {
-            position: absolute;
-            bottom: -5px;
-            width: 12px;
-            height: 12px;
-            background: #cbd5e1;
-            border-radius: 50%;
-            z-index: 3;
-            box-shadow: 0 0 5px rgba(0,0,0,0.8);
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
         @media (max-width: 768px) {
-            .dashboard { grid-template-columns: 1fr; }
+            .panel-controles { flex-direction: column; }
+            .resultado-der { width: 100%; box-sizing: border-box; }
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div class="tornillo tl"></div>
-        <div class="tornillo tr"></div>
-        <div class="tornillo bl"></div>
-        <div class="tornillo br"></div>
+    <!-- Animación de fondo -->
+    <div class="nube nube1"></div>
+    <div class="nube nube2"></div>
 
-        <div class="controles">
-            <h1>Calc. Aceleración</h1>
-            
-            <div class="input-group">
-                <label for="fuerza">Fuerza [ F ] (Newtons)</label>
-                <input type="number" id="fuerza" placeholder="Ej: 100" required>
-            </div>
-            
-            <div class="input-group">
-                <label for="masa">Masa [ m ] (Kg)</label>
-                <input type="number" id="masa" placeholder="Ej: 20" required>
-            </div>
-            
-            <button onclick="ejecutarSimulacion()">Iniciar Secuencia</button>
-        </div>
-
-        <div class="visualizador">
-            <div class="pantalla-resultado">
-                <div class="etiqueta-digital">ACEL.</div>
-                <div class="texto-digital" id="resultado-digital">0.00</div>
-                <div class="etiqueta-digital" style="color:#4b5563;">m/s²</div>
-            </div>
-
-            <div class="escenario" id="pista">
+    <div class="app-contenedor">
+        
+        <!-- Panel de Controles -->
+        <div class="panel-controles">
+            <div class="controles-izq">
+                <h1>Fuerza y Movimiento</h1>
                 
-                <!-- Velocímetro Físico -->
-                <div class="velocimetro-container">
-                    <div class="aguja" id="aguja"></div>
-                    <div class="punto-central"></div>
+                <div class="control-grupo">
+                    <div class="etiqueta-valor">
+                        <span style="color: var(--color-fuerza);">Fuerza Aplicada</span>
+                        <span id="valor-f" style="color: var(--color-fuerza);">50 N</span>
+                    </div>
+                    <input type="range" id="fuerza" min="0" max="200" value="50">
+                </div>
+                
+                <div class="control-grupo">
+                    <div class="etiqueta-valor">
+                        <span style="color: var(--color-masa);">Masa del Objeto</span>
+                        <span id="valor-m" style="color: var(--color-masa);">10 kg</span>
+                    </div>
+                    <input type="range" id="masa" min="1" max="50" value="10">
                 </div>
 
-                <div class="riel"></div>
-                
-                <div class="bloque-wrapper" id="animacion-wrapper">
-                    <div class="flecha-fuerza" id="flecha"></div>
-                    <div class="bloque">m</div>
-                </div>
+                <button onclick="ejecutarSimulacion()">¡Empujar Caja!</button>
+            </div>
+
+            <div class="resultado-der">
+                <h3>Aceleración</h3>
+                <div class="valor-aceleracion" id="resultado-acel">0.00</div>
+                <div style="color: #94a3b8; font-weight: 700;">m/s²</div>
             </div>
         </div>
+
+        <!-- Escenario Visual -->
+        <div class="escenario" id="pista">
+            <div class="bloque-wrapper" id="animacion-wrapper">
+                <div class="vector-fuerza" id="flecha"></div>
+                <div class="bloque" id="caja-visual">10kg</div>
+            </div>
+        </div>
+
     </div>
 
     <script>
+        // Actualizar los números al mover los deslizadores (Sliders)
+        const sliderFuerza = document.getElementById('fuerza');
+        const sliderMasa = document.getElementById('masa');
+        const displayFuerza = document.getElementById('valor-f');
+        const displayMasa = document.getElementById('valor-m');
+        const cajaVisual = document.getElementById('caja-visual');
+        const flecha = document.getElementById('flecha');
+
+        sliderFuerza.oninput = function() {
+            displayFuerza.innerText = this.value + ' N';
+            // Actualizar el tamaño de la flecha en tiempo real
+            flecha.style.width = (this.value / 2) + 'px';
+        }
+
+        sliderMasa.oninput = function() {
+            displayMasa.innerText = this.value + ' kg';
+            cajaVisual.innerText = this.value + 'kg';
+            // Hacer la caja un poco más grande o pequeña dependiendo de la masa
+            let escala = 0.8 + (this.value / 50) * 0.4; // Varía entre 0.8 y 1.2
+            cajaVisual.style.transform = `scale(${escala})`;
+        }
+
+        // Inicializar tamaño de flecha al cargar
+        flecha.style.width = (sliderFuerza.value / 2) + 'px';
+
+        // Lógica de simulación
         function ejecutarSimulacion() {
-            let fuerzaInput = document.getElementById('fuerza').value;
-            let masaInput = document.getElementById('masa').value;
-            let fuerza = parseFloat(fuerzaInput);
-            let masa = parseFloat(masaInput);
-            
-            let display = document.getElementById('resultado-digital');
+            let fuerza = parseFloat(sliderFuerza.value);
+            let masa = parseFloat(sliderMasa.value);
+            let displayAcel = document.getElementById('resultado-acel');
             let wrapper = document.getElementById('animacion-wrapper');
-            let flecha = document.getElementById('flecha');
-            let aguja = document.getElementById('aguja');
             let pista = document.getElementById('pista');
 
-            // 1. Reiniciar animaciones a cero inmediatamente
+            // 1. Reiniciar posición
             wrapper.style.transition = 'none';
             wrapper.style.transform = 'translateX(0)';
-            aguja.style.transition = 'none';
-            aguja.style.transform = 'rotate(-90deg)';
-            flecha.style.width = '0px';
 
-            // Validaciones
-            if (isNaN(fuerza) || isNaN(masa) || masaInput === "" || fuerzaInput === "") {
-                display.innerText = "ERR";
-                display.style.color = "var(--neon-red)";
-                display.style.textShadow = "0 0 10px var(--neon-red)";
-                return;
-            }
-            if (masa <= 0) {
-                display.innerText = "M<=0";
-                display.style.color = "var(--neon-red)";
-                display.style.textShadow = "0 0 10px var(--neon-red)";
-                return;
-            }
-
-            // Cálculo
+            // 2. Calcular
             let aceleracion = fuerza / masa;
+            displayAcel.innerText = aceleracion.toFixed(2);
 
-            // Mostrar resultado en el panel
-            display.innerText = aceleracion.toFixed(2);
-            display.style.color = "var(--neon-green)";
-            display.style.textShadow = "0 0 10px var(--neon-green)";
-
-            // 2. Ejecutar las nuevas animaciones sincronizadas
+            // 3. Animar
             setTimeout(() => {
-                // Vector de fuerza
-                let tamañoFlecha = Math.min(100, Math.abs(fuerza) * 2); 
-                if(fuerza > 0) flecha.style.width = `${tamañoFlecha}px`;
-
-                if (aceleracion !== 0) {
-                    // Calculamos el tiempo base del movimiento
-                    let tiempoAnimacion = Math.max(1, Math.min(4, 15 / Math.abs(aceleracion)));
-                    let distancia = pista.offsetWidth - wrapper.offsetWidth - 30;
+                if (aceleracion > 0) {
+                    let tiempoAnimacion = Math.max(1, Math.min(4, 15 / aceleracion));
+                    let distancia = pista.offsetWidth - wrapper.offsetWidth - 20;
                     
-                    // A. Mover el bloque simulando aceleración física (ease-in)
+                    // Efecto de aceleración realista
                     wrapper.style.transition = `transform ${tiempoAnimacion}s ease-in`;
-                    if (fuerza > 0) {
-                        wrapper.style.transform = `translateX(${distancia}px)`;
-                    } else {
-                        wrapper.style.transform = `translateX(-10px)`; 
-                    }
-
-                    // B. Mover la aguja (MRUV: la velocidad aumenta de forma lineal)
-                    // Calculamos el ángulo final basado en la velocidad máxima que alcanza al final de la pista
-                    let factorVelocidad = Math.abs(aceleracion) * 8; // Multiplicador visual
-                    let anguloFinal = -90 + Math.min(180, factorVelocidad);
-                    
-                    // La aguja usa 'linear' porque en MRUV la velocidad crece de manera constante
-                    aguja.style.transition = `transform ${tiempoAnimacion}s linear`;
-                    aguja.style.transform = `rotate(${anguloFinal}deg)`;
+                    wrapper.style.transform = `translateX(${distancia}px)`;
                 }
             }, 50);
         }
