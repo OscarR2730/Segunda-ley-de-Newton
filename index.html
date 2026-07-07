@@ -3,95 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Segunda Ley de Newton</title>
+    <title>Simulador: Segunda Ley de Newton</title>
     <style>
+        /* Paleta de colores moderna */
+        :root {
+            --bg-principal: #0f172a;
+            --bg-tarjeta: #1e293b;
+            --acento: #3b82f6;
+            --acento-hover: #2563eb;
+            --texto-claro: #f8fafc;
+            --texto-secundario: #94a3b8;
+            --exito: #4ade80;
+            --error: #f87171;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: var(--bg-principal);
+            color: var(--texto-claro);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Contenedor flexible para alinear la calculadora y la animación */
+        .contenedor-principal {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Estilos de las tarjetas */
+        .tarjeta {
+            background-color: var(--bg-tarjeta);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
+            width: 100%;
+        }
+
+        .calculadora {
+            max-width: 320px;
+        }
+
+        .simulador {
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #60a5fa;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+        .formula {
+            background-color: var(--bg-principal);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 1.2em;
+            color: #38bdf8;
+            text-align: center;
+            margin-bottom: 25px;
+            letter-spacing: 2px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9em;
+            color: var(--texto-secundario);
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background-color: var(--bg-principal);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: white;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--acento);
+        }
+
+        button {
+            background-color: var(--acento);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background-color: var(--acento-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #resultado {
+            margin-top: 25px;
+            font-size: 1.4em;
+            font-weight: bold;
+            text-align: center;
+            min-height: 33px;
+        }
+
+        /* Estilos de la Pista y el Bloque */
+        .instruccion {
+            text-align: center;
+            color: var(--texto-secundario);
+            font-size: 0.95em;
+            margin-bottom: 20px;
+        }
+
+        .pista {
+            background-color: #334155;
+            height: 70px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 5px solid #475569;
+        }
+
+        .bloque {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 6px;
+            position: absolute;
+            bottom: 0;
+            left: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .calculadora {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            text-align: center;
-            width: 300px;
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #resultado {
-            margin-top: 20px;
-            font-size: 1.2em;
             font-weight: bold;
-            color: #333;
+            color: white;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
+            /* La animación se inyecta por JavaScript */
         }
     </style>
 </head>
 <body>
 
-    <div class="calculadora">
-        <h2>Calculadora de Aceleración</h2>
-        <p>Fórmula: <strong>a = F / m</strong></p>
+    <div class="contenedor-principal">
         
-        <label for="fuerza">Fuerza (Newtons):</label>
-        <input type="number" id="fuerza" placeholder="Ej: 50" required>
-        
-        <label for="masa">Masa (Kilogramos):</label>
-        <input type="number" id="masa" placeholder="Ej: 10" required>
-        
-        <button onclick="calcular()">Calcular</button>
-        
-        <div id="resultado">Aceleración: -- m/s²</div>
+        <!-- Sección de la Calculadora -->
+        <div class="tarjeta calculadora">
+            <h2>Calculadora</h2>
+            <div class="formula">a = F / m</div>
+            
+            <label for="fuerza">Fuerza Aplicada (Newtons):</label>
+            <input type="number" id="fuerza" placeholder="Ej: 50" required>
+            
+            <label for="masa">Masa del Objeto (Kilogramos):</label>
+            <input type="number" id="masa" placeholder="Ej: 10" required>
+            
+            <button onclick="calcular()">Calcular y Animar</button>
+            
+            <div id="resultado">-- m/s²</div>
+        </div>
+
+        <!-- Sección del Simulador Visual -->
+        <div class="tarjeta simulador">
+            <p class="instruccion">Observa cómo la aceleración afecta la velocidad de desplazamiento del objeto.</p>
+            <div class="pista" id="pista">
+                <div class="bloque" id="bloque">m</div>
+            </div>
+        </div>
+
     </div>
 
     <script>
         function calcular() {
-            // 1. Obtener los valores ingresados por el usuario
+            // 1. Obtener elementos
             let fuerza = parseFloat(document.getElementById('fuerza').value);
             let masa = parseFloat(document.getElementById('masa').value);
             let resultadoDiv = document.getElementById('resultado');
+            let bloque = document.getElementById('bloque');
+            let pista = document.getElementById('pista');
 
-            // 2. Validar que los datos sean correctos
+            // 2. Reiniciar el bloque a su posición inicial sin animación
+            bloque.style.transition = 'none';
+            bloque.style.transform = 'translateX(0)';
+
+            // 3. Validaciones
             if (isNaN(fuerza) || isNaN(masa)) {
-                resultadoDiv.innerText = "Por favor, ingresa ambos valores.";
-                resultadoDiv.style.color = "red";
+                resultadoDiv.innerText = "Ingresa ambos valores ⚠️";
+                resultadoDiv.style.color = "var(--error)";
                 return;
             }
             if (masa <= 0) {
-                resultadoDiv.innerText = "La masa debe ser mayor a 0.";
-                resultadoDiv.style.color = "red";
+                resultadoDiv.innerText = "La masa debe ser > 0 ⚠️";
+                resultadoDiv.style.color = "var(--error)";
                 return;
             }
 
-            // 3. Aplicar la fórmula a = F / m
+            // 4. Aplicar la fórmula
             let aceleracion = fuerza / masa;
 
-            // 4. Mostrar el resultado en pantalla
-            resultadoDiv.innerText = "Aceleración: " + aceleracion.toFixed(2) + " m/s²";
-            resultadoDiv.style.color = "#333";
+            // Mostrar el resultado
+            resultadoDiv.innerText = "a = " + aceleracion.toFixed(2) + " m/s²";
+            resultadoDiv.style.color = "var(--exito)";
+
+            // 5. Crear la animación visual
+            // Usamos setTimeout para permitir que el navegador procese el reinicio a la posición 0 antes de animar
+            setTimeout(() => {
+                if (aceleracion === 0) return; // Si no hay aceleración, no se mueve.
+
+                // Calculamos cuánto tarda la animación. 
+                // Usamos una proporción inversa: a mayor aceleración, menor tiempo (más rápido).
+                // Limitamos el tiempo entre 0.5s (rapidísimo) y 5s (súper lento) para que siempre sea visible.
+                let tiempoAnimacion = Math.max(0.5, Math.min(5, 10 / Math.abs(aceleracion)));
+                
+                // Aplicamos la transición CSS
+                bloque.style.transition = `transform ${tiempoAnimacion}s cubic-bezier(0.4, 0, 1, 1)`;
+                
+                // Calculamos la distancia hasta el final de la pista
+                let distanciaRecorrido = pista.offsetWidth - 70; // 70px compensa el ancho del bloque y márgenes
+                
+                // Movemos el bloque
+                bloque.style.transform = `translateX(${distanciaRecorrido}px)`;
+            }, 50);
         }
     </script>
 
