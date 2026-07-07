@@ -3,259 +3,436 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador: Segunda Ley de Newton</title>
+    <title>Dashboard: Segunda Ley de Newton</title>
+    <!-- Fuente digital para el panel de resultados -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        /* Paleta de colores moderna */
         :root {
-            --bg-principal: #0f172a;
-            --bg-tarjeta: #1e293b;
-            --acento: #3b82f6;
-            --acento-hover: #2563eb;
-            --texto-claro: #f8fafc;
-            --texto-secundario: #94a3b8;
-            --exito: #4ade80;
-            --error: #f87171;
+            --bg-dark: #12151c;
+            --panel-bg: linear-gradient(145deg, #2b303b, #1f232b);
+            --metal-light: #424959;
+            --metal-dark: #15181e;
+            --neon-blue: #00f3ff;
+            --neon-green: #39ff14;
+            --neon-red: #ff003c;
+            --text-main: #e2e8f0;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-            background-color: var(--bg-principal);
-            color: var(--texto-claro);
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% 50%, #202635 0%, #0a0c10 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
+            color: var(--text-main);
         }
 
-        /* Contenedor flexible para alinear la calculadora y la animación */
-        .contenedor-principal {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 40px;
-            justify-content: center;
-            align-items: center;
-            max-width: 900px;
-            width: 100%;
+        /* Contenedor Principal estilo Dashboard Metálico */
+        .dashboard {
+            background: var(--panel-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 
+                0 20px 50px rgba(0,0,0,0.8),
+                inset 2px 2px 5px rgba(255,255,255,0.1),
+                inset -2px -2px 5px rgba(0,0,0,0.5);
+            border: 1px solid #3a4150;
+            width: 850px;
+            max-width: 95%;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
         }
 
-        /* Estilos de las tarjetas */
-        .tarjeta {
-            background-color: var(--bg-tarjeta);
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid #334155;
-            width: 100%;
+        /* Tornillos en las esquinas */
+        .tornillo {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, #7a8294, #2d3340);
+            border-radius: 50%;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3), 1px 1px 3px rgba(0,0,0,0.8);
         }
-
-        .calculadora {
-            max-width: 320px;
+        .tornillo::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 60%; height: 2px;
+            background: #1a1d24;
+            transform: translate(-50%, -50%) rotate(45deg);
         }
+        .tl { top: 15px; left: 15px; }
+        .tr { top: 15px; right: 15px; transform: rotate(30deg); }
+        .bl { bottom: 15px; left: 15px; transform: rotate(-20deg); }
+        .br { bottom: 15px; right: 15px; transform: rotate(70deg); }
 
-        .simulador {
-            max-width: 450px;
+        /* Sección Izquierda: Controles */
+        .controles {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            gap: 20px;
         }
 
-        h2 {
-            margin-top: 0;
-            color: #60a5fa;
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
             text-align: center;
-            font-size: 1.5em;
-        }
-
-        .formula {
-            background-color: var(--bg-principal);
-            padding: 12px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 1.2em;
-            color: #38bdf8;
-            text-align: center;
-            margin-bottom: 25px;
+            color: var(--text-main);
+            text-transform: uppercase;
             letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+        }
+
+        .input-group {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: inset 0 4px 6px rgba(0,0,0,0.3);
         }
 
         label {
             display: block;
-            font-size: 0.9em;
-            color: var(--texto-secundario);
+            font-size: 0.85rem;
+            color: #94a3b8;
             margin-bottom: 8px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            background-color: var(--bg-principal);
-            border: 1px solid #475569;
-            border-radius: 8px;
-            color: white;
-            box-sizing: border-box;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--acento);
-        }
-
-        button {
-            background-color: var(--acento);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
+        input {
+            width: 100%;
+            background: #111318;
+            border: 1px solid #333a47;
+            color: var(--neon-blue);
+            padding: 12px;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1.1rem;
+            font-family: 'Share Tech Mono', monospace;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        button {
+            background: linear-gradient(to bottom, #1e3a8a, #1e40af);
+            color: white;
+            border: 2px solid #3b82f6;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.2);
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+
         button:hover {
-            background-color: var(--acento-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6), inset 0 2px 5px rgba(255,255,255,0.3);
         }
 
         button:active {
-            transform: translateY(0);
+            transform: scale(0.98);
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.6);
         }
 
-        #resultado {
-            margin-top: 25px;
-            font-size: 1.4em;
-            font-weight: bold;
-            text-align: center;
-            min-height: 33px;
+        /* Sección Derecha: Visualizador */
+        .visualizador {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        /* Estilos de la Pista y el Bloque */
-        .instruccion {
-            text-align: center;
-            color: var(--texto-secundario);
-            font-size: 0.95em;
-            margin-bottom: 20px;
+        /* Pantalla Digital */
+        .pantalla-resultado {
+            background: #05080c;
+            border: 3px solid #1f2937;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
         }
 
-        .pista {
-            background-color: #334155;
-            height: 70px;
-            border-radius: 8px;
+        .pantalla-resultado::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0,0,0,0.15),
+                rgba(0,0,0,0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+
+        .texto-digital {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2.5rem;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green);
+            margin: 0;
+        }
+        
+        .etiqueta-digital {
+            font-family: 'Share Tech Mono', monospace;
+            color: #4b5563;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        /* Simulador Físico (Riel y Bloque) */
+        .escenario {
+            background: rgba(0,0,0,0.3);
+            border: 2px solid #333a47;
+            border-radius: 10px;
+            height: 180px;
             position: relative;
             overflow: hidden;
-            border-bottom: 5px solid #475569;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .riel {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            height: 12px;
+            background: linear-gradient(to bottom, #cbd5e1 0%, #64748b 50%, #334155 100%);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+        }
+
+        .bloque-wrapper {
+            position: absolute;
+            bottom: 42px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .flecha-fuerza {
+            height: 10px;
+            width: 0px; /* Cambia con JS */
+            background: linear-gradient(to right, #fbbf24, #ef4444);
+            position: relative;
+            transition: width 0.5s ease;
+            margin-right: 5px;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+        
+        .flecha-fuerza::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: -5px;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid #ef4444;
         }
 
         .bloque {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            border-radius: 6px;
-            position: absolute;
-            bottom: 0;
-            left: 10px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #94a3b8 0%, #475569 100%);
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.4),
+                inset -5px -5px 10px rgba(0,0,0,0.5),
+                5px 5px 15px rgba(0,0,0,0.6);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
             color: white;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.4);
-            /* La animación se inyecta por JavaScript */
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        /* Velocímetro pequeño */
+        .velocimetro-container {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 80px;
+            height: 40px;
+            background: #111318;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            border: 2px solid #333a47;
+            border-bottom: none;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .aguja {
+            width: 2px;
+            height: 35px;
+            background: var(--neon-red);
+            transform-origin: bottom center;
+            transform: rotate(-90deg); /* Inicio a la izquierda */
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 5px var(--neon-red);
+        }
+
+        /* Responsividad para móviles */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="contenedor-principal">
-        
-        <!-- Sección de la Calculadora -->
-        <div class="tarjeta calculadora">
-            <h2>Calculadora</h2>
-            <div class="formula">a = F / m</div>
-            
-            <label for="fuerza">Fuerza Aplicada (Newtons):</label>
-            <input type="number" id="fuerza" placeholder="Ej: 50" required>
-            
-            <label for="masa">Masa del Objeto (Kilogramos):</label>
-            <input type="number" id="masa" placeholder="Ej: 10" required>
-            
-            <button onclick="calcular()">Calcular y Animar</button>
-            
-            <div id="resultado">-- m/s²</div>
-        </div>
+    <div class="dashboard">
+        <!-- Tornillos decorativos -->
+        <div class="tornillo tl"></div>
+        <div class="tornillo tr"></div>
+        <div class="tornillo bl"></div>
+        <div class="tornillo br"></div>
 
-        <!-- Sección del Simulador Visual -->
-        <div class="tarjeta simulador">
-            <p class="instruccion">Observa cómo la aceleración afecta la velocidad de desplazamiento del objeto.</p>
-            <div class="pista" id="pista">
-                <div class="bloque" id="bloque">m</div>
+        <!-- Panel Izquierdo -->
+        <div class="controles">
+            <h1>Calc. Aceleración</h1>
+            
+            <div class="input-group">
+                <label for="fuerza">Fuerza [ F ] (Newtons)</label>
+                <input type="number" id="fuerza" placeholder="Ej: 100" required>
             </div>
+            
+            <div class="input-group">
+                <label for="masa">Masa [ m ] (Kg)</label>
+                <input type="number" id="masa" placeholder="Ej: 20" required>
+            </div>
+            
+            <button onclick="ejecutarSimulacion()">Iniciar Secuencia</button>
         </div>
 
+        <!-- Panel Derecho -->
+        <div class="visualizador">
+            
+            <!-- Pantalla Digital -->
+            <div class="pantalla-resultado">
+                <div class="etiqueta-digital">ACEL.</div>
+                <div class="texto-digital" id="resultado-digital">0.00</div>
+                <div class="etiqueta-digital" style="color:#4b5563;">m/s²</div>
+            </div>
+
+            <!-- Escenario Físico -->
+            <div class="escenario" id="pista">
+                <!-- Velocímetro -->
+                <div class="velocimetro-container">
+                    <div class="aguja" id="aguja"></div>
+                </div>
+
+                <div class="riel"></div>
+                
+                <div class="bloque-wrapper" id="animacion-wrapper">
+                    <!-- Flecha Vectorial de Fuerza -->
+                    <div class="flecha-fuerza" id="flecha"></div>
+                    <!-- Masa -->
+                    <div class="bloque">m</div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <script>
-        function calcular() {
-            // 1. Obtener elementos
-            let fuerza = parseFloat(document.getElementById('fuerza').value);
-            let masa = parseFloat(document.getElementById('masa').value);
-            let resultadoDiv = document.getElementById('resultado');
-            let bloque = document.getElementById('bloque');
+        function ejecutarSimulacion() {
+            let fuerzaInput = document.getElementById('fuerza').value;
+            let masaInput = document.getElementById('masa').value;
+            let fuerza = parseFloat(fuerzaInput);
+            let masa = parseFloat(masaInput);
+            
+            let display = document.getElementById('resultado-digital');
+            let wrapper = document.getElementById('animacion-wrapper');
+            let flecha = document.getElementById('flecha');
+            let aguja = document.getElementById('aguja');
             let pista = document.getElementById('pista');
 
-            // 2. Reiniciar el bloque a su posición inicial sin animación
-            bloque.style.transition = 'none';
-            bloque.style.transform = 'translateX(0)';
+            // Resetear animaciones
+            wrapper.style.transition = 'none';
+            wrapper.style.transform = 'translateX(0)';
+            aguja.style.transform = 'rotate(-90deg)';
+            flecha.style.width = '0px';
 
-            // 3. Validaciones
-            if (isNaN(fuerza) || isNaN(masa)) {
-                resultadoDiv.innerText = "Ingresa ambos valores ⚠️";
-                resultadoDiv.style.color = "var(--error)";
+            // Validaciones estilo sistema
+            if (isNaN(fuerza) || isNaN(masa) || masaInput === "" || fuerzaInput === "") {
+                display.innerText = "ERR";
+                display.style.color = "var(--neon-red)";
+                display.style.textShadow = "0 0 10px var(--neon-red)";
                 return;
             }
             if (masa <= 0) {
-                resultadoDiv.innerText = "La masa debe ser > 0 ⚠️";
-                resultadoDiv.style.color = "var(--error)";
+                display.innerText = "M<=0";
+                display.style.color = "var(--neon-red)";
+                display.style.textShadow = "0 0 10px var(--neon-red)";
                 return;
             }
 
-            // 4. Aplicar la fórmula
+            // Cálculo
             let aceleracion = fuerza / masa;
 
-            // Mostrar el resultado
-            resultadoDiv.innerText = "a = " + aceleracion.toFixed(2) + " m/s²";
-            resultadoDiv.style.color = "var(--exito)";
+            // Mostrar en panel digital
+            display.innerText = aceleracion.toFixed(2);
+            display.style.color = "var(--neon-green)";
+            display.style.textShadow = "0 0 10px var(--neon-green)";
 
-            // 5. Crear la animación visual
-            // Usamos setTimeout para permitir que el navegador procese el reinicio a la posición 0 antes de animar
+            // --- ANIMACIONES ---
             setTimeout(() => {
-                if (aceleracion === 0) return; // Si no hay aceleración, no se mueve.
+                // 1. Animar la flecha de fuerza (hasta 100px max para no salirse)
+                let tamañoFlecha = Math.min(100, Math.abs(fuerza) * 2); 
+                if(fuerza > 0) flecha.style.width = `${tamañoFlecha}px`;
 
-                // Calculamos cuánto tarda la animación. 
-                // Usamos una proporción inversa: a mayor aceleración, menor tiempo (más rápido).
-                // Limitamos el tiempo entre 0.5s (rapidísimo) y 5s (súper lento) para que siempre sea visible.
-                let tiempoAnimacion = Math.max(0.5, Math.min(5, 10 / Math.abs(aceleracion)));
-                
-                // Aplicamos la transición CSS
-                bloque.style.transition = `transform ${tiempoAnimacion}s cubic-bezier(0.4, 0, 1, 1)`;
-                
-                // Calculamos la distancia hasta el final de la pista
-                let distanciaRecorrido = pista.offsetWidth - 70; // 70px compensa el ancho del bloque y márgenes
-                
-                // Movemos el bloque
-                bloque.style.transform = `translateX(${distanciaRecorrido}px)`;
-            }, 50);
+                // 2. Mover la aguja del velocímetro
+                // Mapeamos la aceleración a grados. -90deg es 0, 90deg es el máximo.
+                // Asumimos que una aceleración de 20m/s2 rompe el velocímetro (90deg)
+                let grados = -90 + Math.min(180, (aceleracion / 20) * 180);
+                aguja.style.transform = `rotate(${grados}deg)`;
+
+                // 3. Mover el bloque
+                if (aceleracion !== 0) {
+                    let tiempoAnimacion = Math.max(0.5, Math.min(4, 15 / Math.abs(aceleracion)));
+                    let distancia = pista.offsetWidth - wrapper.offsetWidth - 30; // Calcular límite derecho
+                    
+                    wrapper.style.transition = `transform ${tiempoAnimacion}s cubic-bezier(0.4, 0, 1, 1)`;
+                    
+                    // Si la fuerza es negativa, se mueve atrás (si hubiera espacio), si no, adelante
+                    if (fuerza > 0) {
+                        wrapper.style.transform = `translateX(${distancia}px)`;
+                    } else {
+                        wrapper.style.transform = `translateX(-10px)`; // Un pequeño rebote hacia atrás
+                    }
+                }
+            }, 100);
         }
     </script>
 
