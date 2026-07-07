@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard: Segunda Ley de Newton</title>
-    <!-- Fuente digital para el panel de resultados -->
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -31,7 +30,6 @@
             color: var(--text-main);
         }
 
-        /* Contenedor Principal estilo Dashboard Metálico */
         .dashboard {
             background: var(--panel-bg);
             border-radius: 20px;
@@ -49,7 +47,7 @@
             gap: 30px;
         }
 
-        /* Tornillos en las esquinas */
+        /* Tornillos */
         .tornillo {
             position: absolute;
             width: 12px;
@@ -71,7 +69,7 @@
         .bl { bottom: 15px; left: 15px; transform: rotate(-20deg); }
         .br { bottom: 15px; right: 15px; transform: rotate(70deg); }
 
-        /* Sección Izquierda: Controles */
+        /* Controles */
         .controles {
             display: flex;
             flex-direction: column;
@@ -137,7 +135,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 2px 5px rgba(255,255,255,0.2);
             transition: all 0.2s;
             letter-spacing: 1px;
-            text-shadow: 0 0 5px rgba(255,255,255,0.5);
         }
 
         button:hover {
@@ -147,17 +144,15 @@
 
         button:active {
             transform: scale(0.98);
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.6);
         }
 
-        /* Sección Derecha: Visualizador */
+        /* Visualizador */
         .visualizador {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* Pantalla Digital */
         .pantalla-resultado {
             background: #05080c;
             border: 3px solid #1f2937;
@@ -168,20 +163,6 @@
             align-items: center;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
             position: relative;
-        }
-
-        .pantalla-resultado::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.15),
-                rgba(0,0,0,0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
         }
 
         .texto-digital {
@@ -199,7 +180,6 @@
             text-transform: uppercase;
         }
 
-        /* Simulador Físico (Riel y Bloque) */
         .escenario {
             background: rgba(0,0,0,0.3);
             border: 2px solid #333a47;
@@ -234,7 +214,7 @@
 
         .flecha-fuerza {
             height: 10px;
-            width: 0px; /* Cambia con JS */
+            width: 0px; 
             background: linear-gradient(to right, #fbbf24, #ef4444);
             position: relative;
             transition: width 0.5s ease;
@@ -268,57 +248,77 @@
             color: white;
             font-weight: bold;
             font-size: 1.2rem;
-            text-shadow: 1px 1px 2px black;
         }
 
-        /* Velocímetro pequeño */
+        /* Velocímetro Mejorado */
         .velocimetro-container {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            width: 80px;
-            height: 40px;
-            background: #111318;
-            border-top-left-radius: 40px;
-            border-top-right-radius: 40px;
-            border: 2px solid #333a47;
-            border-bottom: none;
+            top: 15px;
+            right: 20px;
+            width: 100px;
+            height: 50px;
+            background: radial-gradient(circle at bottom, #1f2937 0%, #0f172a 100%);
+            border-top-left-radius: 50px;
+            border-top-right-radius: 50px;
+            border: 2px solid #475569;
+            border-bottom: 2px solid #1e293b;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            padding-bottom: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+        }
+
+        /* Marcas del velocímetro */
+        .velocimetro-container::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            border-top-left-radius: 40px;
+            border-top-right-radius: 40px;
+            border: 2px dashed #64748b;
+            border-bottom: none;
+            bottom: 0;
+            opacity: 0.5;
         }
 
         .aguja {
-            width: 2px;
-            height: 35px;
+            width: 3px;
+            height: 45px;
             background: var(--neon-red);
             transform-origin: bottom center;
-            transform: rotate(-90deg); /* Inicio a la izquierda */
-            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 5px var(--neon-red);
+            transform: rotate(-90deg); /* Inicio a la izquierda (velocidad 0) */
+            box-shadow: 0 0 8px var(--neon-red);
+            border-radius: 3px;
+            z-index: 2;
+            margin-bottom: -2px; /* Ajuste para el punto de rotación */
         }
 
-        /* Responsividad para móviles */
+        .punto-central {
+            position: absolute;
+            bottom: -5px;
+            width: 12px;
+            height: 12px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            z-index: 3;
+            box-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+
         @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
+            .dashboard { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
     <div class="dashboard">
-        <!-- Tornillos decorativos -->
         <div class="tornillo tl"></div>
         <div class="tornillo tr"></div>
         <div class="tornillo bl"></div>
         <div class="tornillo br"></div>
 
-        <!-- Panel Izquierdo -->
         <div class="controles">
             <h1>Calc. Aceleración</h1>
             
@@ -335,33 +335,28 @@
             <button onclick="ejecutarSimulacion()">Iniciar Secuencia</button>
         </div>
 
-        <!-- Panel Derecho -->
         <div class="visualizador">
-            
-            <!-- Pantalla Digital -->
             <div class="pantalla-resultado">
                 <div class="etiqueta-digital">ACEL.</div>
                 <div class="texto-digital" id="resultado-digital">0.00</div>
                 <div class="etiqueta-digital" style="color:#4b5563;">m/s²</div>
             </div>
 
-            <!-- Escenario Físico -->
             <div class="escenario" id="pista">
-                <!-- Velocímetro -->
+                
+                <!-- Velocímetro Físico -->
                 <div class="velocimetro-container">
                     <div class="aguja" id="aguja"></div>
+                    <div class="punto-central"></div>
                 </div>
 
                 <div class="riel"></div>
                 
                 <div class="bloque-wrapper" id="animacion-wrapper">
-                    <!-- Flecha Vectorial de Fuerza -->
                     <div class="flecha-fuerza" id="flecha"></div>
-                    <!-- Masa -->
                     <div class="bloque">m</div>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -378,13 +373,14 @@
             let aguja = document.getElementById('aguja');
             let pista = document.getElementById('pista');
 
-            // Resetear animaciones
+            // 1. Reiniciar animaciones a cero inmediatamente
             wrapper.style.transition = 'none';
             wrapper.style.transform = 'translateX(0)';
+            aguja.style.transition = 'none';
             aguja.style.transform = 'rotate(-90deg)';
             flecha.style.width = '0px';
 
-            // Validaciones estilo sistema
+            // Validaciones
             if (isNaN(fuerza) || isNaN(masa) || masaInput === "" || fuerzaInput === "") {
                 display.innerText = "ERR";
                 display.style.color = "var(--neon-red)";
@@ -401,38 +397,40 @@
             // Cálculo
             let aceleracion = fuerza / masa;
 
-            // Mostrar en panel digital
+            // Mostrar resultado en el panel
             display.innerText = aceleracion.toFixed(2);
             display.style.color = "var(--neon-green)";
             display.style.textShadow = "0 0 10px var(--neon-green)";
 
-            // --- ANIMACIONES ---
+            // 2. Ejecutar las nuevas animaciones sincronizadas
             setTimeout(() => {
-                // 1. Animar la flecha de fuerza (hasta 100px max para no salirse)
+                // Vector de fuerza
                 let tamañoFlecha = Math.min(100, Math.abs(fuerza) * 2); 
                 if(fuerza > 0) flecha.style.width = `${tamañoFlecha}px`;
 
-                // 2. Mover la aguja del velocímetro
-                // Mapeamos la aceleración a grados. -90deg es 0, 90deg es el máximo.
-                // Asumimos que una aceleración de 20m/s2 rompe el velocímetro (90deg)
-                let grados = -90 + Math.min(180, (aceleracion / 20) * 180);
-                aguja.style.transform = `rotate(${grados}deg)`;
-
-                // 3. Mover el bloque
                 if (aceleracion !== 0) {
-                    let tiempoAnimacion = Math.max(0.5, Math.min(4, 15 / Math.abs(aceleracion)));
-                    let distancia = pista.offsetWidth - wrapper.offsetWidth - 30; // Calcular límite derecho
+                    // Calculamos el tiempo base del movimiento
+                    let tiempoAnimacion = Math.max(1, Math.min(4, 15 / Math.abs(aceleracion)));
+                    let distancia = pista.offsetWidth - wrapper.offsetWidth - 30;
                     
-                    wrapper.style.transition = `transform ${tiempoAnimacion}s cubic-bezier(0.4, 0, 1, 1)`;
-                    
-                    // Si la fuerza es negativa, se mueve atrás (si hubiera espacio), si no, adelante
+                    // A. Mover el bloque simulando aceleración física (ease-in)
+                    wrapper.style.transition = `transform ${tiempoAnimacion}s ease-in`;
                     if (fuerza > 0) {
                         wrapper.style.transform = `translateX(${distancia}px)`;
                     } else {
-                        wrapper.style.transform = `translateX(-10px)`; // Un pequeño rebote hacia atrás
+                        wrapper.style.transform = `translateX(-10px)`; 
                     }
+
+                    // B. Mover la aguja (MRUV: la velocidad aumenta de forma lineal)
+                    // Calculamos el ángulo final basado en la velocidad máxima que alcanza al final de la pista
+                    let factorVelocidad = Math.abs(aceleracion) * 8; // Multiplicador visual
+                    let anguloFinal = -90 + Math.min(180, factorVelocidad);
+                    
+                    // La aguja usa 'linear' porque en MRUV la velocidad crece de manera constante
+                    aguja.style.transition = `transform ${tiempoAnimacion}s linear`;
+                    aguja.style.transform = `rotate(${anguloFinal}deg)`;
                 }
-            }, 100);
+            }, 50);
         }
     </script>
 
